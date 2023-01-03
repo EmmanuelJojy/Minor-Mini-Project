@@ -26,7 +26,7 @@ class WebSocketDHT extends StatefulWidget {
 }
 
 class _WebSocketDHT extends State<WebSocketDHT> {
-  var ip = 
+  var ip = "ws://192.168.14.206:81";
   late IOWebSocketChannel channel;
   late bool connected; //boolean value to track if WebSocket is connected
 
@@ -48,8 +48,7 @@ class _WebSocketDHT extends State<WebSocketDHT> {
   channelconnect() {
     //function to connect
     try {
-      channel =
-          IOWebSocketChannel.connect("ws://192.168.254.206:81"); //channel IP : Port
+      channel = IOWebSocketChannel.connect(ip); //channel IP : Port
       channel.stream.listen(
         (message) {
           log(message);
@@ -65,17 +64,17 @@ class _WebSocketDHT extends State<WebSocketDHT> {
         },
         onDone: () {
           //if WebSocket is disconnected
-          print("Web socket is closed");
+          log("Web socket is closed");
           setState(() {
             connected = false;
           });
         },
         onError: (error) {
-          print(error.toString());
+          log(error.toString());
         },
       );
     } catch (_) {
-      print("error on connecting to websocket.");
+      log("error on connecting to websocket.");
     }
   }
 
@@ -93,17 +92,30 @@ class _WebSocketDHT extends State<WebSocketDHT> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Privacy Gaurd"), backgroundColor: Colors.redAccent),
+        title: const Text("Privacy Gaurd"),
+      ),
       body: Container(
           alignment: Alignment.topCenter, //inner widget alignment to center
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              const Padding(padding: EdgeInsets.all(20)),
               Container(
-                  //showing if websocket is connected or disconnected
-                  child: connected
-                      ? Text("WEBSOCKET CONNECTED at ")
-                      : Text("DISCONNECTED")),
+                //showing if websocket is connected or disconnected
+                child: connected
+                    ? const Text("NODE MCU WEBSOCKET CONNECTED")
+                    : const Text("ALL WEBSOCKETS DISCONNECTED"),
+              ),
+              const Padding(padding: EdgeInsets.all(20)),
+              Container(
+                child: connected ? Text(ip) : const Text(""),
+              ),
+              const Padding(padding: EdgeInsets.all(20)),
+              Container(
+                child: connected
+                    ? const Text("SURVEILLANCE MODE - ACTIVE")
+                    : const Text("SURVEILLANCE MODE - DEACTIIVE"),
+              ),
             ],
           )),
     );
